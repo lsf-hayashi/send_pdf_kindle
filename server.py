@@ -1,4 +1,5 @@
 import aiosmtplib
+import asyncio
 
 class Server():
     def __init__(self, username, password):
@@ -9,6 +10,7 @@ class Server():
         self.use_tls = True
     
     async def send(self, msg):
+        await asyncio.sleep(1)
         await aiosmtplib.send(
             msg,
             hostname=self.hostname,

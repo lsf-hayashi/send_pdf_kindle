@@ -4,14 +4,20 @@ import os
 import aiofiles
 
 async def get_paths_in_directory (dir_path:str):
-    response = []
+    directory = os.listdir(dir_path)
+    all_paths = list() 
 
-    for path in os.listdir(dir_path):
-        response.append(f'{dir_path}/{path}')
-    return response
+    for path in directory:
+        full_path = os.path.join(dir_path, path)
+        if os.path.isdir(full_path):
+            all_paths = all_paths + await get_paths_in_directory(full_path)
+        else:
+            all_paths.append(full_path)
+
+    return all_paths
 
 async def create_message_with_attachment(from_addr:str, to_addr:str, filepath:str, subject:str = ''):
-    split_filename = filepath.split('/')
+    split_filename = filepath.split("\\")
     filename = split_filename[len(split_filename)-1]
 
     async with aiofiles.open(filepath, 'rb') as f:
@@ -31,7 +37,5 @@ async def create_message(from_addr:str, to_addr:str, subject:str = ''):
     msg['From'] = from_addr
     msg['To'] = to_addr
     msg['Subject'] = subject
- 
-
  
     return msg
