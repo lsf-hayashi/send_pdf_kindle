@@ -8,6 +8,7 @@ from server import Server
 
 username = os.environ['USERNAME']
 password = os.environ['PASSWORD']
+
 server = Server(username=username, password=password)
 
 async def send_attachment(from_addr:str, to_addr:str, filepath:str, subject:str = ''):
@@ -16,13 +17,14 @@ async def send_attachment(from_addr:str, to_addr:str, filepath:str, subject:str 
 
     msg = await create_message_with_attachment(from_addr, to_addr, filepath)
     await server.send(msg)
-     
+    os.remove(filepath)
+    
     done_time = time.perf_counter() - start_time
     print(f'Done sedding file:{filepath} - Executed in {done_time:0.2f} seconds.')
 
 async def main ():
     to_addr = os.environ['KINDLE']
-    dir_path = 'to_send'
+    dir_path = 'F:\Mangas'
 
     files_paths = await get_paths_in_directory(dir_path)  
 
